@@ -7,7 +7,7 @@
 - 解决：备份旧 repo → 替换为 mirrors.aliyun.com/centos-vault/7.9.2009/ → 关闭 fastestmirror → 重建缓存
 - 验证：yum repolist 显示 base/extras/updates 三个仓库共 16,771 个包
 
-## 问题 2：（你修源过程中实际遇到的问题，没有就空着）
+## 问题 2：
 
 - 现象：粘贴板不互通
 - 排查：VMware tools工具
