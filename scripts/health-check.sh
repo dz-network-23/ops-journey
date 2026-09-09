@@ -14,4 +14,3 @@
 > echo ""
 > echo "----- SSH 暴力破解尝试 -----"
 > sudo grep -c "sshd.*Failed password" /var/log/secure
-> EOF
