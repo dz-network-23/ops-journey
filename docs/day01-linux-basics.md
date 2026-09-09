@@ -1,30 +1,46 @@
-# Day 01 · CentOS 7 yum 源修复 + 文件系统/权限/文本处理
+# Day01 · 环境搭建 + 修 yum 源
 
-## 问题 1：CentOS 7 EOL 导致 yum install 全部失败
-- 现象：yum install 报 Could not resolve host: mirrorlist.centos.org
-- 排查：发现 CentOS 7 已于 2024-06-30 停止维护，官方源下线
-- 原因：源 URL 仍指向已关闭的官方仓库
-- 解决：备份旧 repo → 替换为 mirrors.aliyun.com/centos-vault/7.9.2009/ → 关闭 fastestmirror → 重建缓存
-- 验证：yum repolist 显示 base/extras/updates 三个仓库共 16,771 个包
+第一天把环境搞起来，踩了几个坑。
 
-## 问题 2：
+## 1. VMware 装 CentOS 7
 
-- 现象：粘贴板不互通
-- 排查：VMware tools工具
-- 原因：不明
-- 解决：重启虚拟机
-- 验证：可以通过shift+ctrl+v粘贴进虚拟机
+装的桌面版，用户 dzgsy。切 root 用 su -。
 
+## 2. yum 装不了软件（最大的坑）
 
-## 知识点：FHS（文件系统层级标准）
-- 自己的文件：/root（root 用户）或 /home/用户名（普通用户）或 /tmp（临时）
-- 系统配置：/etc（不要堆私货），日志：/var/log（只读）
-- 不能碰：/usr、/bin、/lib、/boot
-- 安装软件文件去向：程序→/usr/bin，库→/usr/lib64，配置→/etc，文档→/usr/share/doc
-- 验证：rpm -ql tree 输出 5 个文件全部按 FHS 规矩放
+yum install 直接报错。查了下是 CentOS 7 已经 EOL（2024-06 官方停止维护），
+官方源 mirrorlist.centos.org 关了，域名都解析不了。
+
+解决：
+1. 先备份旧配置
+   mv /etc/yum.repos.d/*.repo /root/repo-backup/
+2. 写新的阿里云 vault 源，指向 centos-vault/7.9.2009
+3. 关掉 fastestmirror 插件
+4. yum clean all && yum makecache
+
+验证：yum repolist 出来 16771 个包。
+
+## 3. 装基础工具
+
+yum install -y tree vim-enhanced lsof wget curl net-tools bash-completion
+
+顺手用 rpm -ql tree 看了软件装哪了：程序在 /usr/bin，文档在 /usr/share/doc，
+全按 FHS 标准来的。自己的东西放 /root 或 /home，系统目录别乱动。
+
+## 4. 剪贴板不互通
+
+Windows 复制的东西粘不进虚拟机，排查发现是 VMware Tools 的问题，
+装好重启后 shift+ctrl+v 能粘了。
+
+## 5. git push 连不上 GitHub
+
+报 ECONNREFUSED 127.0.0.1:443。
+原因是没走代理。
+git config --global http.proxy 后解决。
+以后 push 失败先想代理。
 
 ## 今日成果
-- [x] 修好 yum 源
-- [x] 装好 7 个基础工具
-- [x] 建好 ops-journey 目录骨架
-- [x] rpm -ql 验证 FHS
+
+- yum 修好，工具装齐
+- ops-journey 目录建好
+- GitHub 仓库通了
