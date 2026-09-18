@@ -367,17 +367,22 @@ find /atguigu/find/ -name '*.txt' -exec ls -lh {} \;
 
 
 ## du
+查看文件或目录的磁盘占用大小
+
 -h 以人类可读显示文件大小
 -s 仅显示指定目录或文件的大小，不包括其子目录的大小
+>du -sh /home/dzgsy
 
->du -sh
 
 # 目录、inode和block
+文件存储在硬盘上，硬盘最小存储单位是“扇区”，每个扇区存储512字节
+一个文件一个inode，至少一个block
+
 三者的关系
 1. **目录**里存的不是文件，而是"**文件名 → inode 号**"的映射表
 2. **inode** 存文件的**元数据**：权限、属主属组、大小、三个时间戳、硬链接数、**block 的位置指针**
     - **inode 里唯独不存文件名**
-3. **block** 存文件的**真实内容**，是磁盘读写的最小单位，默认 4KB
+3. **block** 存文件的**真实内容**，是磁盘读写的最小单位，默认 4KB(八个扇区)
 
 
 
@@ -386,9 +391,25 @@ find /atguigu/find/ -name '*.txt' -exec ls -lh {} \;
 >df -i  //看 inode 使用情况（不是磁盘空间）
 - inode 里存的不是 block 内容，而是指向 block 的**指针**
 
+# 软链接和硬链接
+
+## 软链接
+软链接是一个独立的文件，具有自己的inode编号，内容是源文件的目录名
+软链接依赖于目标文件的路径
+创建命令:
+>ln -s source.txt softlink
+
+查看内容:
+>cat hardlink //类似重定向
 
 
+## 硬链接
+硬链接是指多个文件名指向同一个inode
+创建命令:
+>ln source.txt softlink
 
+查看内容:
+>cat softlink  //类似访问源文件
 
 
 
