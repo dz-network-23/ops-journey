@@ -636,18 +636,19 @@ curl cip.cc   //能获取自己当前的公网ip
 -C 解压目的地(**约定放在命令末尾**)
 
 例如:
->tar -(z)cvf 创建的压缩包 输入1...输入N
+>tar -(z)cvf 创建的压缩包(可以包括路径) 输入1...输入N
 >tar -(z)xvf 压缩包 -C 解压目的地
+>tar -tf 压缩包 //查看压缩包内容
 
 
 
 #### zip
 
->zip [-r] 参数1 参数2 参数3 ... 参数N
+>zip [-r] 创建的压缩包 参数1 参数2 ... 参数N
 
 -r 递归
 
->unzip 参数1 参数2 参数3 ... 参数N [-d] 解压目的地
+>unzip 压缩包 [-d] 解压目的地
 
 例如:
 >zip -r 创建的压缩包 输入1...输入N
@@ -655,6 +656,9 @@ curl cip.cc   //能获取自己当前的公网ip
 
 
 
+
+date >> ipaddress_WAN.txt
+curl cip.cc >> ipaddress_WAN.txt
 
 
 

@@ -268,6 +268,7 @@ which 命令
 whereis 命令
 查询命令以及相关文件位置
 
+
 ## diff/vimdiff
 diff查看两个文件的差异
 >diff aaa.txt bbb.txt
@@ -287,6 +288,7 @@ vimdiff在前台展示，更直观
 ctrl+ww 切换窗口
 do 覆盖当前窗口
 
+
 ## sort
 针对文本文件内容的行进行排序
 自然排序:从小到大
@@ -300,6 +302,7 @@ do 覆盖当前窗口
 -t % 将分割符号替换为%
 -r 反转
 -k2 -k3 按k2、k3列排序
+
 
 ### sort**重要规则** 
 一、短选项带参数不能合并
@@ -328,6 +331,7 @@ sort 没有"多个分隔符合并"的选项，需要先预处理
 
 -c 重复次数
 
+
 ## find
 >find /root
 
@@ -346,6 +350,7 @@ sort 没有"多个分隔符合并"的选项，需要先预处理
 -user 用户名
 >find /etc -user root
 
+
 ### find和其他命令联用
 1. 加$或` 
 ```bash
@@ -363,7 +368,7 @@ xargs后不能用别名
 ```bash
 find /atguigu/find/ -name '*.txt' -exec ls -lh {} \;
 ```
-把查询到的结果放入{}中执行，后面\;或+是结束符，+是累加发送\;是递推发送
+**把查询到的结果放入{}中执行，后面\;或+是结束符，+是累加发送\;是递推发送**
 
 
 ## du
@@ -391,6 +396,7 @@ find /atguigu/find/ -name '*.txt' -exec ls -lh {} \;
 >df -i  //看 inode 使用情况（不是磁盘空间）
 - inode 里存的不是 block 内容，而是指向 block 的**指针**
 
+
 # 软链接和硬链接
 
 ## 软链接
@@ -408,28 +414,82 @@ find /atguigu/find/ -name '*.txt' -exec ls -lh {} \;
 创建命令:
 >ln source.txt softlink
 
+当创建的软连接指向文件夹时，调用的最后要有/
+不加/时是软链接的文件，加/时是软链接指向的目录
+>ll softlink/ →软链接对应的目录
+>rm softlink  →软链接文件本身
+
 查看内容:
 >cat softlink  //类似访问源文件
 
 
+# 用户、管理、权限
+
+## 用户相关文件
+
+/etc/passwd，存储用户信息
+用户名:密码占位符:UID:GID:用户全名/描述:家目录:登录shell
+
+/etc/group，组信息
+组名:组密码占位符:组成员列表
+
+/etc/shadow，用户密码信息
+用户名:密码:密码的过期时间（默认不过期）
+
+## useradd
+>useradd -u -s -M -g 用户名
+
+-u 指定uid
+-s 指定登陆后shell
+-M 不创建家目录
+-g 指定组
 
 
+## groupadd
+>groupadd -g 组名
+
+-g 设置新建的组的GID
 
 
+## passwd
+>passwd --stdin 用户名
+
+--stdin 非交互式设置密码
 
 
+## su
+加-表示加载环境变量和家目录
 
 
+## userdel
+>userdel -r 用户名
+
+-r 删除家目录及所有相关文件
 
 
+## id
+检测用户是否存在，输出用户uid，gid，用户组信息
+>id 用户名
 
 
+## whoami/who am i
+我是谁
+>whoami
+
+我到底是谁
+>who am i
 
 
+## w
+展示用户信息
 
 
+## last
+查看历史用户登录情况
 
 
+## lastlog
+查看历史用户最近一次登录情况
 
 
 
