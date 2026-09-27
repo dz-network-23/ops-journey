@@ -492,33 +492,107 @@ find /atguigu/find/ -name '*.txt' -exec ls -lh {} \;
 查看历史用户最近一次登录情况
 
 
+## 拓展属性
+展示拓展属性
+>lsattr 文件
+
+更改拓展属性
+>chattr +a/+i 文件
+
+a 仅追加
+i 不可变
 
 
+## sudo
+更改配置文件
+>visudo
 
 
+# 软件包管理命令
+
+## rpm
+>rpm 可选项 软件包
+
+-ivh i安装 v显示过程 h显示进度条
+-qa q查询 a所有
+-ql q查询 l显示软件的文件列表
+-qf q查询 f查询拥有指定文件的软件
+-Uvh U升级
+-e 删除软件
 
 
+## yum
+/etc/yum.conf 配置yum下载安装包是否缓存以及缓存目录
+/etc/yum.repos.d/*.repo 配置yum源
 
 
+安装软件包
+>yum install -y xxx
+
+-y 全程yes
 
 
+精确查询仓库元数据，确定文件所属软件包
+>yum provides xxx
 
 
+模糊查找软件包
+>yum search xxx
 
 
+展示安装包
+>yum list available/install/all
+available 可用的(yum源中所有可用)
+install 已安装
+all 所有
 
 
+查看yum源的信息
+>yum repolist
 
 
+删除软件包(以及相关依赖)
+>yum remove xxx
+
+-e 不删除依赖
 
 
+清除所有缓存
+>yum clean all
 
 
+指定更新某一个软件包，不指定则更新所有
+>yum update
 
 
+# 程序和进程（process）管理
+
+## ps(process status)
+
+看pid和ppid
+>ps -ef
 
 
+看其他信息（主要是进程状态）
+>ps -aux
 
+STAT进程状态码
+| 状态码 | 含义 | 说明 |
+|:---:|:---|:---|
+| R | 运行中 (Running) | 正在执行或等待 CPU 调度 |
+| S | 可中断睡眠 (Sleeping) | 等待事件完成（如 I/O 操作），**可被信号唤醒** |
+| D | 不可中断睡眠 | 通常等待磁盘 I/O，**不能被信号中断**（高负载磁盘操作常见） |
+| T | 暂停状态 (Stopped) | 通过 `Ctrl+Z` 或 `SIGSTOP` 暂停 |
+| Z | 僵尸进程 (Zombie) | 进程已终止，但父进程未回收资源 |
+| < | 高优先级 | 优先级为负值（`nice -n -5`） |
+| N | 低优先级 | 优先级为正值（`nice -n 5`） |
+| s | 会话领导者 | 进程是终端会话的主控进程 |
+| l | 多线程进程 | 进程包含线程（如 Java/Python 多线程程序） |
+| + | 前台进程组 | 与终端关联的前台进程（可通过 `bg` 切后台） |
+
+
+以树形查看进程信息
+>pstree -p
 
 
 
