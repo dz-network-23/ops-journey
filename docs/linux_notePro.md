@@ -658,48 +658,186 @@ shift+>或shift+<向左或右选择（有高亮提示）
 结束或kill父进程即可解决
 
 
+孤儿进程
+父进程异常终止，子进程被内核接管，ppid都为1
+
+
+## 后台进程管理
+
+进程的后台运行方式
+
+1. 直接在命令后加&符号
+>命令 &
+>[1] 5201
+
+
+返回值：
+&方式的后台数量+pid
+
+
+2. nohup和&
+`有输出到bash的命令不要直接在后面加&
+指定当前命令输出位置（比如>>）`
+或者使用nohup：
+>nohup 命令 &
+
+命令执行后会在后台运行，bash会提示输出位置。
+
+
+3. ctrl+z挂起前台进程（变为后台停止状态）
+
+运行前台命令时按ctrl+z挂起进程，后台停止
+
+继续前台运行 fg
+
+后台运行 bg
 
 
 
+4. screen
+先下载程序，用screen可以实现类后台运行
+开新虚拟终端：
+>screen
+
+在screen中：
+ctrl+a d 切换回主终端
+ctrl+a k 杀死当前虚拟终端
 
 
+显示虚拟终端列表：
+>screen -ls
+
+进入一个虚拟终端：
+>screen -r 屏幕名
 
 
+## systemctl
+服务启动和开机自启控制
 
 
+## Linux运行级别
+查看当前运行级别
+>systemctl get-default
+
+查看运行级别所对应的配置文件
+>ll /usr//lib/systemd/system/runlevel*.target
+
+设置运行级别
+>systemctl set-default 配置文件名
 
 
+## 使用救援模式重置密码
+
+### 单用户救援模式
+
+#### selinux安全模式
+配置文件目录：
+>vim /etc/selinux/config
+
+关闭：
+把SELINUX=enforcing改为disabled
+
+#### 忘记密码修改方式：
+1. Linux内核选择时按e
+2. linux16这行ro改为rw，最后加`空格init=/bin/bash`
+3. 修改passwd文件：vim /etc/passwd，把x删掉
+4. 物理按键重启，然后passwd root修改密码即可
 
 
+### 光盘救援模式;
+详见115集
 
 
+# 磁盘管理
+
+## RAID
+
+- RAID 0：多盘拼速度，容量100%，坏一块数据全丢——只放可再生数据（缓存、临时文件）。
+- RAID 1：两盘互为镜像，容量50%，坏一块没事——系统盘标配，安全但浪费。
+- RAID 5：数据+校验分散存储，容量 (n-1)/n，坏一块能撑——大容量冷数据/文件存储首选，但随机写很慢。
+- RAID 10：先镜像再条带，容量50，性能≈RAID 0、安全≈RAID 1——数据库/虚拟化等核心业务的标准答案。
 
 
+## MBR、磁盘和磁盘分区命名
+
+MBR位于0磁道0柱面1扇区
+由引导代码、分区表、结束标志组成
+
+MBR最大4个主分区或3个主分区一个拓展分区
+
+硬盘命名：
+硬盘：以/dev/sd开头，如sda、sdb
+虚拟机/公有云：/dev/vd开头，如vda、vdb
+
+分区命名：
+第几个分区就在后面加几，如sda1、sda2
+在MBR管理磁盘时，主分区为前四个，第五个为拓展逻辑分区，例如sda5
 
 
+## 新增磁盘和分区（fdisk→MBR）
+
+### fdisk
+>fdisk -l //以list查看分区情况
+>fdisk /dev/sdb //管理第二块硬盘(sdb)
+
+这里的命令删除使用ctrl+back，全删ctrk+u
+
+d 删除一个分区
+n 添加一个新分区（默认MBR）
+p 打印当前的分区列表
+q 不保存退出
+w 保存退出
 
 
+### 格式化文件系统
+以xfs格式化/dev/sdb1
+>mkfs.xfs /dev/sdb1
+
+-f 强制格式化文件系统
 
 
+### 挂载
+用命令实现临时挂载（一定要挂载到空目录）：
+>mount 分区 目录
+>mount /dev/sdb1 /mnt
+
+取消挂载
+>umount /mnt
+
+改配置文件永久挂载：
+改/etc/rc.local，该配置文件会在系统启动时执行里面的命令
+
+分区挂载专用配置文件/etc/fstab
+yy p复制，前面改成/dev/sdb1     /mnt     xfs
+**建议不放在/mnt下，因为分区只能挂载空目录**
+
+>mount -a    //配置但未生效的挂载全部生效
+>mount /dev/sdb1     //让某一个分区的挂载生效
 
 
+## 新增磁盘和分区（parted→GPT）
+打印硬盘信息
+>parted /dev/sdb print
+
+进入配置硬盘
+>parted /dev/sdc
+
+print 打印分区细节
+help 打印帮助
+mktable gpt 设置分区类型，mbr为msdos
+mkpart primary 0 10 设置分区类型为主分区，两个数值分别为start和end，大小为10以M为单位
+rm 分区号 删除分区号所对应的分区
+q 退出（默认保存）
 
 
+**格式化和挂载方法相同**
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+## 光盘的挂载
+挂载：
+>mount /dev/cdrom /mnt
+取消挂载：
+>umount /mnt
 
 
 
